@@ -44,18 +44,18 @@ def synthesize_spectra(galaxy):
 		wvl_r, flux_r = read_interp_synth(teff=temp, logg=logg, feh=fe, alphafe=alpha, data_path='/raid/grid7/',start=6300., sstop=9100.)
 		wvl = np.concatenate((wvl_b,wvl_r))
 		flux = np.concatenate((flux_b,flux_r))
+		dlam = 0.93 #FWHM = 2.2 = 2.355 dlam
+		### TO DO: change resolution of wvl2!!####
+		# wvl2 = np.arange(start=4100.0,stop=9100.0,step=resolution)
+		wvl2 = wvl
+		flux_smooth = smooth_gauss_wrapper.smooth_gauss_wrapper(wvl, flux, wvl2, dlam)
+		print(type(flux_smooth))
+
 		with open(outputfile, 'w+') as file:
 			for datapoint in range(len(wvl)):
 				wavelength_ = str(wvl[datapoint])
 				flux_ = str(flux[datapoint])
 				file.write(wavelength_ + ',' + flux_ + '\n')
-		'''spectrum = runMoog(temp, logg, fe, alpha)
-		with open(outputfile, 'w+') as file:
-			file.write('wavelength, flux \n')
-			for datapoint in range(len(spectrum[0][0])):
-				wavelength = str(spectrum[0][1][datapoint])
-				flux = str(spectrum[0][0][datapoint])
-				file.write(wavelength + ',' + flux + '\n')'''
 
 def main():
     synthesize_spectra('Sculptor')
